@@ -16,7 +16,7 @@ public class BaseDriveObject extends Object {
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
 /* we are using the same motors with same gear ratio (1:2) parellel to last year
  add the ticks per strafe and ticks per arc if it is needed*/
- */
+
 
     final double Tolerance = 3;
     final double FRPower = 1;
@@ -44,6 +44,5 @@ public class BaseDriveObject extends Object {
 
     public void initialize() {
 
-        WGG.setZeroPowerBehavior();
     }
 }
