@@ -7,12 +7,12 @@
 
 
     public class TeleOp extends OpMode {
-        DcMotor frontRight, frontLeft, backRight, backLeft, collector, WGG;
+        DcMotor frontRight, frontLeft, backRight, backLeft, intake, wobbleGoalGrabber;
         Servo WGS;
         final double COLLECTPOWER= 0.5;
         final double TICKS_PER_REVOLURION = (383.6*2);
 
-        final double WGGPOWER = 0.5;
+        final double wobbleGoalGrabberPOWER = 0.5;
         boolean if_pressedGp1X = false;
 
 
@@ -32,13 +32,13 @@
             backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            collector =hardwareMap.dcMotor.get("collector");
-            collector.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            collector.setDirection(DcMotor.Direction.FORWARD);
+            intake =hardwareMap.dcMotor.get("intake");
+            intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            intake.setDirection(DcMotor.Direction.FORWARD);
 
-            WGG = hardwareMap.dcMotor.get("WGG");
-            WGG.setDirection(DcMotorSimple.Direction.FORWARD);
-            WGG.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            wobbleGoalGrabber = hardwareMap.dcMotor.get("wobbleGoalGrabber");
+            wobbleGoalGrabber.setDirection(DcMotorSimple.Direction.FORWARD);
+            wobbleGoalGrabber.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
 
@@ -53,19 +53,19 @@
 
         private void setCollectorMotor () {
             if (gamepad1.right_bumper) {
-                collector.setPower(COLLECTPOWER);
+                intake.setPower(COLLECTPOWER);
             } else if (gamepad1.left_bumper) {
-                collector.setPower(-COLLECTPOWER);
+                intake.setPower(-COLLECTPOWER);
             } else {
-                collector.setPower(0);
+                intake.setPower(0);
             }
         }
 
         private void setWobbleGoalGrabber () {
             if (gamepad1.dpad_down) {
-                WGG.setPower(WGGPOWER);
+                wobbleGoalGrabber.setPower(wobbleGoalGrabberPOWER);
             } else {
-            WGG.setPower(0);
+            wobbleGoalGrabber.setPower(0);
             }
 
             /* use case if it is needed */
