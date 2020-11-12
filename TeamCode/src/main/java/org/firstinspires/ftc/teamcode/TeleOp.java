@@ -1,5 +1,6 @@
     package org.firstinspires.ftc.teamcode;
 
+    import com.qualcomm.hardware.lynx.MessageKeyedLock;
     import com.qualcomm.robotcore.eventloop.opmode.OpMode;
     import com.qualcomm.robotcore.hardware.DcMotor;
     import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,6 +15,11 @@
 
     final double wobbleGoalGrabberPOWER = 0.5;
     boolean if_pressedGp1X = false;
+    double MAXTICK = 383.6/2;
+
+
+
+
 
 
     public void init() {
@@ -40,13 +46,16 @@
         wobbleGoalGrabber.setDirection(DcMotorSimple.Direction.FORWARD);
         wobbleGoalGrabber.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        wobbleGoalGrabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wobbleGoalGrabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
     }
 
     public void loop() {
         setDriveMotors();
         setIntakeMotor();
-        setWobbleGoalGrabber();
+        setWobbleGoalGrabberEncoder();
     }
 
     private void setIntakeMotor() {
@@ -58,6 +67,23 @@
             intake.setPower(0);
         }
     }
+
+    private void setWobbleGoalGrabberEncoder () {
+        if (gamepad1.dpad_down) {
+            wobbleGoalGrabber.setPower(0.3);
+            if (wobbleGoalGrabber.getCurrentPosition() >= 386.3/2) {
+                wobbleGoalGrabber.setPower(0);
+            }
+        }
+
+        if (gamepad1.dpad_up) {
+            wobbleGoalGrabber.setPower(-0.3);
+            if (wobbleGoalGrabber.getCurrentPosition() <= 0) {
+                wobbleGoalGrabber.setPower(0);
+            }
+        }
+    }
+
 
     private void setWobbleGoalGrabber() {
         if (gamepad1.dpad_down) {
