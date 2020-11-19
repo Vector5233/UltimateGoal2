@@ -2,6 +2,7 @@
 
     import com.qualcomm.hardware.lynx.MessageKeyedLock;
     import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+    import com.qualcomm.robotcore.hardware.CRServo;
     import com.qualcomm.robotcore.hardware.DcMotor;
     import com.qualcomm.robotcore.hardware.DcMotorSimple;
     import com.qualcomm.robotcore.hardware.Servo;
@@ -10,7 +11,8 @@
     public class TeleOp extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, intake, wobbleGoalGrabber;
     Servo WGS;
-    final double COLLECTPOWER = 0.5;
+    CRServo intakeServo1;
+    final double COLLECTPOWER = 1.0;
     final double TICKS_PER_REVOLURION = (383.6 * 2);
 
     final double wobbleGoalGrabberPOWER = 0.5;
@@ -41,6 +43,7 @@
         intake = hardwareMap.dcMotor.get("intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake.setDirection(DcMotor.Direction.FORWARD);
+        intakeServo1 = hardwareMap.crservo.get("intakeServo1");
 
         wobbleGoalGrabber = hardwareMap.dcMotor.get("wobbleGoalGrabber");
         wobbleGoalGrabber.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -61,10 +64,13 @@
     private void setIntakeMotor() {
         if (gamepad1.right_bumper) {
             intake.setPower(COLLECTPOWER);
+            intakeServo1.setPower(COLLECTPOWER);
         } else if (gamepad1.left_bumper) {
             intake.setPower(-COLLECTPOWER);
+            intakeServo1.setPower(COLLECTPOWER);
         } else {
             intake.setPower(0);
+            intakeServo1.setPower(0);
         }
     }
 
