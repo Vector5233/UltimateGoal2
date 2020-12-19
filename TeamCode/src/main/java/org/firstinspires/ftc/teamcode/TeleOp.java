@@ -7,11 +7,12 @@
     import com.qualcomm.robotcore.hardware.DcMotorSimple;
     import com.qualcomm.robotcore.hardware.Servo;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Red")
+    import sun.text.resources.th.BreakIteratorInfo_th;
+
+    @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Red")
     public class TeleOp extends OpMode {
-    DcMotor frontRight, frontLeft, backRight, backLeft, intake, wobbleGoalGrabber;
+    DcMotor frontRight, frontLeft, backRight, backLeft, intake, intakeMotor2, wobbleGoalGrabber;
     Servo WGS;
-    CRServo intakeServo1;
     final double COLLECTPOWER = 1.0;
     final double TICKS_PER_REVOLURION = (383.6 * 2);
 
@@ -43,7 +44,9 @@
         intake = hardwareMap.dcMotor.get("intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake.setDirection(DcMotor.Direction.FORWARD);
-        intakeServo1 = hardwareMap.crservo.get("intakeServo1");
+        intakeMotor2= hardwareMap.dcMotor.get("intakeMotor2");
+        intakeMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
 
         wobbleGoalGrabber = hardwareMap.dcMotor.get("wobbleGoalGrabber");
         wobbleGoalGrabber.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -64,29 +67,33 @@
     private void setIntakeMotor() {
         if (gamepad1.right_bumper) {
             intake.setPower(COLLECTPOWER);
-            intakeServo1.setPower(COLLECTPOWER);
+            intakeMotor2.setPower(COLLECTPOWER);
         } else if (gamepad1.left_bumper) {
             intake.setPower(-COLLECTPOWER);
-            intakeServo1.setPower(COLLECTPOWER);
+            intakeMotor2.setPower(COLLECTPOWER);
         } else {
             intake.setPower(0);
-            intakeServo1.setPower(0);
+            intakeMotor2.setPower(0);
         }
     }
 
     private void setWobbleGoalGrabberEncoder () {
         if (gamepad1.dpad_down) {
-            wobbleGoalGrabber.setPower(0.3);
-            if (wobbleGoalGrabber.getCurrentPosition() >= 386.3/2) {
+            if(wobbleGoalGrabber.getCurrentPosition() <= 386.3/2) {
+                wobbleGoalGrabber.setPower(0.3);
+            }else {
                 wobbleGoalGrabber.setPower(0);
             }
         }
-
-        if (gamepad1.dpad_up) {
-            wobbleGoalGrabber.setPower(-0.3);
-            if (wobbleGoalGrabber.getCurrentPosition() <= 0) {
+        else if (gamepad1.dpad_up) {
+            if (wobbleGoalGrabber.getCurrentPosition() > 3) {
+                wobbleGoalGrabber.setPower(-0.3);
+            }else{
                 wobbleGoalGrabber.setPower(0);
             }
+        }
+        else {
+            wobbleGoalGrabber.setPower(0);
         }
     }
 
@@ -112,6 +119,8 @@
             if_pressedGp1X = false;
         }
     }
+
+
 
 
     private void setDriveMotors() {
