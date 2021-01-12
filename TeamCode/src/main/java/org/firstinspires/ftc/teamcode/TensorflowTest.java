@@ -44,7 +44,6 @@ public class TensorflowTest extends LinearOpMode {
         initialize();
         waitForStart();
         // results 2020.12.19 -- "Objects detected 0".   No visual feedback.
-        if (opModeIsActive()) {
             while (opModeIsActive()) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -65,5 +64,5 @@ public class TensorflowTest extends LinearOpMode {
                 }
             }
         }
-    }
+    
 
