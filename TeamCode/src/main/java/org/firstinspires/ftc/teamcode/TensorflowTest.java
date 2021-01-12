@@ -35,6 +35,9 @@ public class TensorflowTest extends LinearOpMode {
         tfodParameters.minimumConfidence = 0.6;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        if (tfod != null) {
+                    tfod.activate();
+                }
     }
         public void runOpMode(){
 
@@ -43,9 +46,6 @@ public class TensorflowTest extends LinearOpMode {
         // results 2020.12.19 -- "Objects detected 0".   No visual feedback.
         if (opModeIsActive()) {
             while (opModeIsActive()) {
-                if (tfod != null) {
-                    tfod.activate();
-                }
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
