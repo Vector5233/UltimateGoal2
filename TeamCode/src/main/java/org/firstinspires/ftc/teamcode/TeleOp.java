@@ -150,7 +150,7 @@
 
 
     private void setDriveMotors() {
- /*           if(gamepad1.right_stick_y - gamepad1.right_stick_x > 1){
+            if(gamepad1.right_stick_y - gamepad1.right_stick_x > 1){
                 frontLeft.setPower(1 - gamepad1.left_stick_x/2);
                 backRight.setPower(1 + gamepad1.left_stick_x/2);
             }
@@ -165,7 +165,7 @@
             else {
                 frontRight.setPower((gamepad1.right_stick_y + gamepad1.right_stick_x) + gamepad1.left_stick_x / 2);
                 backLeft.setPower((gamepad1.right_stick_y + gamepad1.right_stick_x) - gamepad1.left_stick_x / 2);
-            }*/
+            }
 
         }
     }
