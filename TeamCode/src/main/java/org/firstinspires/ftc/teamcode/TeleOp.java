@@ -51,7 +51,7 @@
         intake.setDirection(DcMotor.Direction.FORWARD);
         sweeper= hardwareMap.dcMotor.get("sweeper");
         sweeper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        sweeper.setDirection(DcMotorSimple.Direction.FORWARD);
+        sweeper.setDirection(DcMotorSimple.Direction.REVERSE);
 
         launcher= hardwareMap.dcMotor.get("launcher");
         launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
