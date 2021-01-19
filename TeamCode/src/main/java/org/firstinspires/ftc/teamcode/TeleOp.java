@@ -21,10 +21,11 @@
     final double INTAKE_POWER=1.0;
     final double INTAKE_THRESHOLD=.3;
 
-    final double wobbleGoalGrabberPOWER = 0.5;
+    final double WOBBLE_GOAL_GRABBER_POWER = 1.0;
     boolean if_pressedGp1X = false;
     double MAXTICK = 383.6/2;
-
+    final double WGS_OPEN = .55;
+    final double WGS_CLOSED = 0;
 
 
 
@@ -72,7 +73,9 @@
         setIntakeMotor();
         setSweeper();
         setLauncher();
-        setWobbleGoalGrabberEncoder();
+        //setWobbleGoalGrabberEncoder();
+        setWobbleGoalGrabber();
+        setWobbleGoalServo();
     }
 
     private void setIntakeMotor() {
@@ -97,13 +100,33 @@
 
     private void setLauncher()  {
         if (gamepad2.right_trigger > LAUNCHER_THRESHHOLD) {
-            launcher.setPower(gamepad2.left_trigger * LAUNCHER_POWER);
+            launcher.setPower(gamepad2.right_trigger * LAUNCHER_POWER);
         } else {
             launcher.setPower(0);
         }
     }
 
-    private void setWobbleGoalGrabberEncoder () {
+        private void setWobbleGoalGrabber()  {
+            if (gamepad1.left_trigger > LAUNCHER_THRESHHOLD) {
+                wobbleGoalGrabber.setPower(gamepad1.left_trigger * WOBBLE_GOAL_GRABBER_POWER);
+            }
+            else if (gamepad1. right_trigger > LAUNCHER_THRESHHOLD) {
+                    wobbleGoalGrabber.setPower(gamepad1.right_trigger * -WOBBLE_GOAL_GRABBER_POWER);
+                }
+            }
+            else {
+                wobbleGoalGrabber.setPower(0);
+            }
+        }
+
+        private void setWobbleGoalServo() {
+            if (gamepad1.left_bumper)  {
+                WGS.setPosition(WGS_CLOSED);
+            } else if (gamepad1.right_bumper) {
+                WGS.setPosition(WGS_OPEN);
+            }
+
+    /* private void setWobbleGoalGrabberEncoder () {
         if (gamepad1.dpad_down) {
             if(wobbleGoalGrabber.getCurrentPosition() <= 386.3/2) {
                 wobbleGoalGrabber.setPower(0.3);
@@ -129,11 +152,11 @@
             wobbleGoalGrabber.setPower(wobbleGoalGrabberPOWER);
         } else {
             wobbleGoalGrabber.setPower(0);
-        }
+        } */
 
         /* use case if it is needed */
 
-        if (gamepad1.x) {
+        /*if (gamepad1.x) {
             if (!if_pressedGp1X) {
                 if (WGS.getPosition() <= 0.1) {
                     WGS.setPosition(1);
@@ -144,7 +167,7 @@
         } else {
             if_pressedGp1X = false;
         }
-    }
+    }*/
 
 
 
