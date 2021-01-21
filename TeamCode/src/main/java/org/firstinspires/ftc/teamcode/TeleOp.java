@@ -13,19 +13,22 @@
     public class TeleOp extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, intake,
             sweeper, wobbleGoalGrabber, launcher;
-    Servo WGS;
+    Servo WGS, webCamServo;
+
     final double COLLECTPOWER = 1.0;
     final double TICKS_PER_REVOLURION = (383.6 * 2);
-    final double LAUNCHER_POWER=1.0;
+    final double LAUNCHER_POWER=0.65;
     final double LAUNCHER_THRESHHOLD=.5;
     final double INTAKE_POWER=1.0;
     final double INTAKE_THRESHOLD=.3;
 
-    final double WOBBLE_GOAL_GRABBER_POWER = 1.0;
+    final double WOBBLE_GOAL_GRABBER_POWER = 0.5;
     boolean if_pressedGp1X = false;
     double MAXTICK = 383.6/2;
     final double WGS_OPEN = .55;
     final double WGS_CLOSED = 0;
+    final double webCamServo_OPEN = .5;  // check function and change name
+    final double webCamServo_CLOSED = 0;
 
 
 
@@ -67,6 +70,9 @@
 
         WGS = hardwareMap.servo.get("WGS");
         WGS.setPosition(WGS_CLOSED);
+
+        webCamServo = hardwareMap.servo.get("webCamServo");
+        webCamServo.setPosition(webCamServo_CLOSED);
     }
 
     public void loop() {
@@ -77,6 +83,7 @@
         //setWobbleGoalGrabberEncoder();
         setWobbleGoalGrabber();
         setWobbleGoalServo();
+        setwebCamServo();
     }
 
     private void setIntakeMotor() {
@@ -134,7 +141,7 @@
 
 
 
-    private void setDriveMotors() {
+    void setDriveMotors() {
             if(gamepad1.right_stick_y - gamepad1.right_stick_x > 1){
                 frontLeft.setPower(1 - gamepad1.left_stick_x/2);
                 backRight.setPower(1 + gamepad1.left_stick_x/2);
@@ -153,4 +160,13 @@
             }
 
         }
+        void setwebCamServo(){
+            if(gamepad2.x){
+                webCamServo.setPosition(webCamServo_CLOSED);
+            }
+            else if(gamepad2.y){
+                webCamServo.setPosition(webCamServo_OPEN);
+            }
+        }
+
     }
