@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class BaseDriveObject extends Object {
-    DcMotor frontLeft, frontRight, backLeft, backRight, intake, intakeMotor2, wobbleGoalGrabber;
+    DcMotor frontLeft, frontRight, backLeft, backRight, intake, sweeper, launcher, wobbleGoalGrabber;
     Servo WGS;
     ElapsedTime elapsedTime;
     LinearOpMode opmode;
@@ -58,7 +58,7 @@ public class BaseDriveObject extends Object {
         backLeft = BL;
         wobbleGoalGrabber = WGG;
         intake = IN;
-        intakeMotor2 = IN2;
+        sweeper = IN2;
 
         WGS = WG;
 
@@ -83,12 +83,6 @@ public class BaseDriveObject extends Object {
     public BaseDriveObject(LinearOpMode parent) {
         opmode = parent;
 
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-
         frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
         frontRight = opmode.hardwareMap.dcMotor.get("frontRight");
 
@@ -96,10 +90,18 @@ public class BaseDriveObject extends Object {
         backRight = opmode.hardwareMap.dcMotor.get("backRight");
 
         intake = opmode.hardwareMap.dcMotor.get("intake");
-        intakeMotor2 = opmode.hardwareMap.dcMotor.get("intakeMotor2");
-
-        wobbleGoalGrabber = opmode.hardwareMap.dcMotor.get("WobbleGoalGrabber");
+        sweeper = opmode.hardwareMap.dcMotor.get("sweeper");
+        launcher = opmode.hardwareMap.dcMotor.get("launcher");
+        wobbleGoalGrabber = opmode.hardwareMap.dcMotor.get("wobbleGoalGrabber");
         WGS = opmode.hardwareMap.servo.get("WGS");
+
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
     }
 
     public void setModeAll(DcMotor.RunMode mode) {
@@ -110,14 +112,15 @@ public class BaseDriveObject extends Object {
     }
 
 
-    public void driveDistance(double power, double distance, int time) {
+    public void driveDistance(double power, double distance, int timeOut) {
         driveTimeout = new ElapsedTime();
-        int DRIVE_TIMEOUT = time;
+        int DRIVE_TIMEOUT = timeOut;
         int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
 
         if (power > MAXSPEED) {
             power = MAXSPEED;
         }
+
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         frontLeft.setTargetPosition(ticks);
@@ -132,7 +135,7 @@ public class BaseDriveObject extends Object {
         backRight.setPower(power);
         backLeft.setPower(power);
 
-        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()) {
+        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
             if (driveTimeout.milliseconds() > DRIVE_TIMEOUT)
                 break;
         }
@@ -154,8 +157,7 @@ public class BaseDriveObject extends Object {
 
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontLeft.setTargetPosition(ticks);
-        frontRight.setTargetPosition(-ticks);
+
         backLeft.setTargetPosition(-ticks);
         backRight.setTargetPosition(ticks);
 
@@ -166,7 +168,7 @@ public class BaseDriveObject extends Object {
         backLeft.setPower(power);
         backRight.setPower(power);
 
-        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()) {
+        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
             if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)
                 break;
         }
