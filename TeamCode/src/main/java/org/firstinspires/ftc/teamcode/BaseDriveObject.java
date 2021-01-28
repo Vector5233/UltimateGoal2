@@ -164,9 +164,9 @@ public class BaseDriveObject extends Object {
 
         int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
 
-        /*if power > MAXSPEED {
-            power = MAXSPEED
-        }*/
+        if (power > MAXSPEED) {
+            power = MAXSPEED;
+        }
 
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 

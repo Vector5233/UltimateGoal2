@@ -17,7 +17,7 @@
 
     final double COLLECTPOWER = 1.0;
     final double TICKS_PER_REVOLURION = (383.6 * 2);
-    final double LAUNCHER_POWER=0.65;
+    final double LAUNCHER_POWER=0.75;
     final double LAUNCHER_THRESHHOLD=.5;
     final double INTAKE_POWER=1.0;
     final double INTAKE_THRESHOLD=.3;
