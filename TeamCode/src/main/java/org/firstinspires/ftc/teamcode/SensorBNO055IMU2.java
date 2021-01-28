@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -48,16 +47,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.Locale;
 
 /**
- * {@link SensorBNO055IMU} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link SensorBNO055IMU2} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@TeleOp(name = "Sensor: BNO055 IMU", group = "Sensor")
+@TeleOp(name = "Sensor: BNO055 IMU2", group = "Sensor")
                            // Comment this out to add to the opmode list
-public class SensorBNO055IMU extends LinearOpMode
+public class SensorBNO055IMU2 extends LinearOpMode
     {
     //----------------------------------------------------------------------------------------------
     // State
@@ -118,10 +117,12 @@ public class SensorBNO055IMU extends LinearOpMode
         // At the beginning of each telemetry update, grab a bunch of data
         // from the IMU that we will then display in separate lines.
         telemetry.addAction(new Runnable() { @Override public void run()
+
                 {
                 // Acquiring the angles is relatively expensive; we don't want
                 // to do that in each of the three items that need that info, as that's
                 // three times the necessary expense.
+
                 angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 gravity  = imu.getGravity();
                 position = imu.getPosition().toUnit(DistanceUnit.CM);
@@ -172,33 +173,8 @@ public class SensorBNO055IMU extends LinearOpMode
                     }
                 });
         telemetry.addLine()
-                .addData("posx", new Func<String>() {
-                    @Override
-                    public String value() {
-                        return String.format(Locale.getDefault(), "%.3f",
-                                position.x);
-                    }
+                .addData("position", position.toString());
 
-                    ;
-                })
-                .addData("posy", new Func<String>() {
-                    @Override
-                    public String value() {
-                        return String.format(Locale.getDefault(), "%.3f",
-                                position.y);
-                    }
-
-                    ;
-                })
-                .addData("posz", new Func<String>() {
-                    @Override
-                    public String value() {
-                        return String.format(Locale.getDefault(), "%.3f",
-                                position.z);
-                    }
-
-                    ;
-                });
     }
     //----------------------------------------------------------------------------------------------
     // Formatting

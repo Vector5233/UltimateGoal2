@@ -12,7 +12,7 @@ public class BaseDriveObject extends Object {
     ElapsedTime elapsedTime;
     LinearOpMode opmode;
     final double ROBOT_RADIUS = 22.5;
-    final double TICKS_PER_INCH_STRAIGHT = (383.6 * 2) / (4 * 3.14159265358979323846264);
+    final double TICKS_PER_INCH_STRAIGHT = (1.056637001) * (383.6 * 2) / (4 * 3.14159265358979323846264);
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
     final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT) * 1.15 * (20.0 / 17.0);
     final double TICKS_PER_DEGREE = (3.14159 / 180) * ROBOT_RADIUS * TICKS_PER_INCH_TURN;
@@ -65,21 +65,6 @@ public class BaseDriveObject extends Object {
         opmode = parent;
     }
 
-    public void stopDriving() {
-        frontLeft.setPower(0.0);
-        frontRight.setPower(0.0);
-        backLeft.setPower(0.0);
-        backRight.setPower(0.0);
-    }
-
-    public void telemetryDcMotor() {
-        opmode.telemetry.addData("FR", frontRight.getCurrentPosition());
-        opmode.telemetry.addData("FB", frontLeft.getCurrentPosition());
-        opmode.telemetry.addData("BR", backRight.getCurrentPosition());
-        opmode.telemetry.addData("BL", backLeft.getCurrentPosition());
-        opmode.telemetry.update();
-    }
-
     public BaseDriveObject(LinearOpMode parent) {
         opmode = parent;
 
@@ -104,13 +89,35 @@ public class BaseDriveObject extends Object {
 
     }
 
+    public void stopDriving() {
+        frontLeft.setPower(0.0);
+        frontRight.setPower(0.0);
+        backLeft.setPower(0.0);
+        backRight.setPower(0.0);
+    }
+
+    public void telemetryDcMotor() {
+        opmode.telemetry.addData("FR", frontRight.getCurrentPosition());
+        opmode.telemetry.addData("FB", frontLeft.getCurrentPosition());
+        opmode.telemetry.addData("BR", backRight.getCurrentPosition());
+        opmode.telemetry.addData("BL", backLeft.getCurrentPosition());
+        opmode.telemetry.update();
+    }
+
+
+
     public void setModeAll(DcMotor.RunMode mode) {
         frontLeft.setMode(mode);
         frontRight.setMode(mode);
         backLeft.setMode(mode);
         backRight.setMode(mode);
     }
-
+    public void setModeDriving() {
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
     public void driveDistance(double power, double distance, int timeOut) {
         driveTimeout = new ElapsedTime();
@@ -121,20 +128,26 @@ public class BaseDriveObject extends Object {
             power = MAXSPEED;
         }
 
+
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontLeft.setTargetPosition(ticks);
-        frontRight.setTargetPosition(ticks);
+
         backRight.setTargetPosition(ticks);
         backLeft.setTargetPosition(ticks);
 
-        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backRight.setPower(power);
-        backLeft.setPower(power);
-
+        setModeDriving();
+        if (distance >= 0) {
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+            backRight.setPower(power);
+            backLeft.setPower(power);
+        }
+        else {
+            frontLeft.setPower(-power);
+            frontRight.setPower(-power);
+            backRight.setPower(power);
+            backLeft.setPower(power);
+        }
         while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
             if (driveTimeout.milliseconds() > DRIVE_TIMEOUT)
                 break;
@@ -161,13 +174,18 @@ public class BaseDriveObject extends Object {
         backLeft.setTargetPosition(-ticks);
         backRight.setTargetPosition(ticks);
 
-        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
+        setModeDriving();
+        if (distance >= 0) {
+            frontLeft.setPower(power);
+            frontRight.setPower(-power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
+        } else {
+            frontLeft.setPower(-power);
+            frontRight.setPower(power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
+        }
         while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
             if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)
                 break;
