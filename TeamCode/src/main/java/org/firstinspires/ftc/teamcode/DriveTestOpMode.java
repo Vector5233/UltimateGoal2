@@ -19,9 +19,9 @@ public class DriveTestOpMode extends LinearOpMode {
         telemetry.addLine("Hello");
         telemetry.update();
         sleep(2000);
-        drive.strafeDistance(0.5, 24, 10000);
+        drive.turn(180, true, .5);
         sleep(2000);
-        drive.strafeDistance(0.5,-24,10000);
+        drive.turn(90, false, .5);
         drive.telemetryDcMotor();
         sleep(2000);
         telemetry.addLine("Done");

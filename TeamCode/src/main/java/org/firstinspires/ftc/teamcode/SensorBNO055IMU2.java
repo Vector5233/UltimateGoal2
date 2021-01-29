@@ -69,6 +69,7 @@ public class SensorBNO055IMU2 extends LinearOpMode
     Orientation angles;
     Acceleration gravity;
     Position position;
+    Velocity velocity;
 
     //----------------------------------------------------------------------------------------------
     // Main logic
@@ -93,6 +94,9 @@ public class SensorBNO055IMU2 extends LinearOpMode
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        position = new Position();
+        velocity = new Velocity();
+
         // Set up our telemetry dashboard
         composeTelemetry();
 
@@ -100,7 +104,7 @@ public class SensorBNO055IMU2 extends LinearOpMode
         waitForStart();
 
         // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 10);
+        imu.startAccelerationIntegration(position, velocity, 10);
 
         // Loop and update the dashboard
         while (opModeIsActive()) {

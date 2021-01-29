@@ -25,8 +25,8 @@
     final double WOBBLE_GOAL_GRABBER_POWER = 0.5;
     boolean if_pressedGp1X = false;
     double MAXTICK = 383.6/2;
-    final double WGS_OPEN = .55;
-    final double WGS_CLOSED = 0;
+    final double WGS_OPEN = .2;
+    final double WGS_CLOSED = .5;
     final double webCamServo_OPEN = .5;  // check function and change name
     final double webCamServo_CLOSED = 0;
 
@@ -129,9 +129,9 @@
 
         private void setWobbleGoalServo() {
             if (gamepad1.left_bumper) {
-                WGS.setPosition(WGS_CLOSED);
-            } else if (gamepad1.right_bumper) {
                 WGS.setPosition(WGS_OPEN);
+            } else if (gamepad1.right_bumper) {
+                WGS.setPosition(WGS_CLOSED);
             }
         }
 

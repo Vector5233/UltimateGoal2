@@ -1,17 +1,26 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
 public class BaseDriveObject extends Object {
     DcMotor frontLeft, frontRight, backLeft, backRight, intake, sweeper, launcher, wobbleGoalGrabber;
     Servo WGS;
+    BNO055IMU imu;
     ElapsedTime elapsedTime;
     LinearOpMode opmode;
-    final double ROBOT_RADIUS = 22.5;
+    final double ROBOT_RADIUS = 20;
     final double TICKS_PER_INCH_STRAIGHT = (1.056637001) * (383.6 * 2) / (4 * 3.14159265358979323846264);
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
     final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT) * 1.15 * (20.0 / 17.0);
@@ -86,7 +95,20 @@ public class BaseDriveObject extends Object {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = opmode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 10);
     }
 
     public void stopDriving() {
@@ -213,7 +235,51 @@ public class BaseDriveObject extends Object {
         opmode.telemetry.update();
     }
 
-    /* public void turn(float angle, boolean CCW, double power) {
+    public void turn(float angle, boolean CCW, double power){
+
+        int ticks = (int) (angle * TICKS_PER_DEGREE);
+
+        if (power > MAXSPEED) {
+            power = MAXSPEED;
+        }
+
+        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        if (CCW){
+            backLeft.setTargetPosition(-ticks);
+            backRight.setTargetPosition(ticks);
+
+            setModeDriving();
+            backLeft.setPower(power);
+            backRight.setPower(power);
+            frontRight.setPower(power);
+            frontLeft.setPower(-power);
+
+            while ((backLeft.isBusy() || backRight.isBusy())&& opmode.opModeIsActive()){
+                ;
+            }
+            stopDriving();
+        }
+        else{
+            backLeft.setTargetPosition(ticks);
+            backRight.setTargetPosition(-ticks);
+
+            setModeDriving();
+            backLeft.setPower(power);
+            backRight.setPower(power);
+            frontRight.setPower(-power);
+            frontLeft.setPower(power);
+
+            while ((backLeft.isBusy() || backRight.isBusy())&& opmode.opModeIsActive()){
+                ;
+            }
+
+            stopDriving();
+
+        }
+    }
+
+    /*public void turn(float angle, boolean CCW, double power) {
         double currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
         double targetAngle;
 
