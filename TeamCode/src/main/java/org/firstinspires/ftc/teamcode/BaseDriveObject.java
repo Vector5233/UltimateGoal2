@@ -141,6 +141,13 @@ public class BaseDriveObject extends Object {
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+        /**
+     * driveDistance controls linear movement forward/backwards
+     * @param power power provided to motor (value between 0 and 1)
+     * @param distance distance traveled (inches)
+     * @param timeOut time taken before bot stops traveling (ms)
+     */
+    
     public void driveDistance(double power, double distance, int timeOut) {
         driveTimeout = new ElapsedTime();
         int DRIVE_TIMEOUT = timeOut;
@@ -180,6 +187,13 @@ public class BaseDriveObject extends Object {
         stopDriving();
     }
 
+        /**
+     *  strafeDistance controls linear movement left/right
+     * @param power power provided to motor (value between 0 and 1)
+     * @param distance (approximate) distance traveled (inches)
+     * @param time time taken before bot will stop moving (ms)
+     */
+    
     public void strafeDistance(double power, double distance, int time) {
         strafeTimeout = new ElapsedTime();
         int STRAFE_TIMEOUT = time;
