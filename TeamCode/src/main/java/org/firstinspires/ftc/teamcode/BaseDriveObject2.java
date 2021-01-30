@@ -9,13 +9,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-public class BaseDriveObject extends Object {
+public class BaseDriveObject2 extends Object {
     DcMotor frontLeft, frontRight, backLeft, backRight, intake, sweeper, launcher;
     DcMotorEx wobbleGoalGrabber;
     Servo WGS;
@@ -26,7 +23,7 @@ public class BaseDriveObject extends Object {
     final double TICKS_PER_INCH_STRAIGHT = (1.056637001) * (383.6 * 2) / (4 * 3.14159265358979323846264);
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
     final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT) * 1.15 * (20.0 / 17.0);
-    final double TICKS_PER_DEGREE = (3.14159 / 180) * ROBOT_RADIUS * TICKS_PER_INCH_TURN * 180./250.;
+    final double TICKS_PER_DEGREE = (3.14159 / 180) * ROBOT_RADIUS * TICKS_PER_INCH_TURN;
     final double TOLERANCE = 1;  // idk about the tolerance
 /* we are using the same motors with same gear ratio (1:2) parellel to last year
  add the ticks per strafe and ticks per arc if it is needed*/
@@ -50,10 +47,7 @@ public class BaseDriveObject extends Object {
     double BLpower = 1;
     final double INTAKE_POWER = 0.7;
     final double LAUNCH_POWER = 0.7;
-    final double WGG_OPENED = 330;
-    final double WGG_CLOSED = 0;
-    final double WGG_SERVO_OPENED = 0;
-    final double WGG_SERVO_CLOSED = 0.47;
+
     double MAXSPEED = 0.7;
 
     private ElapsedTime strafeTimeout;
@@ -65,7 +59,9 @@ public class BaseDriveObject extends Object {
     /* reset time encoder (?) im not sure what his coding does. Remove if it is not needed */
 
 
-    public BaseDriveObject(LinearOpMode parent) {
+
+
+    public BaseDriveObject2(LinearOpMode parent) {
         opmode = parent;
 
         frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
@@ -222,43 +218,7 @@ public class BaseDriveObject extends Object {
      * @param distance (approximate) distance traveled (inches)
      * @param time time taken before bot will stop moving (ms)
      */
-
-        public void strafeDistance2(double power, double distance, int time) {
-            strafeTimeout = new ElapsedTime();
-            int STRAFE_TIMEOUT = time;
-
-            int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
-
-            if (power > MAXSPEED) {
-                power = MAXSPEED;
-            }
-
-            setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontLeft.setTargetPosition(ticks);
-            frontRight.setTargetPosition(-ticks);
-            backLeft.setTargetPosition(-ticks);
-            backRight.setTargetPosition(ticks);
-
-            setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
-            if (distance >= 0) {
-                frontLeft.setPower(power);
-                frontRight.setPower(-power);
-                backLeft.setPower(-power);
-                backRight.setPower(power);
-            } else {
-                frontLeft.setPower(-power);
-                frontRight.setPower(power);
-                backLeft.setPower(power);
-                backRight.setPower(-power);
-            }
-            while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
-                if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)
-                    break;
-            }
-
-            stopDriving();
-        }
-
+    
     public void strafeDistance(double power, double distance, int time) {
         strafeTimeout = new ElapsedTime();
         int STRAFE_TIMEOUT = time;
@@ -312,8 +272,6 @@ public class BaseDriveObject extends Object {
     public void initialize() {
         opmode.telemetry.addLine("initialized");
         opmode.telemetry.update();
-        wobbleGoalGrabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        WGGServoClose();
     }
 
     public void turn(float angle, boolean CCW, double power){
@@ -327,17 +285,14 @@ public class BaseDriveObject extends Object {
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         if (CCW){
-            frontRight.setTargetPosition(-ticks);
-            frontLeft.setTargetPosition(ticks);
-            backLeft.setTargetPosition(ticks);
-            backRight.setTargetPosition(-ticks);
+            backLeft.setTargetPosition(-ticks);
+            backRight.setTargetPosition(ticks);
 
-            setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
-
+            setModeDriving();
             backLeft.setPower(power);
             backRight.setPower(power);
             frontRight.setPower(power);
-            frontLeft.setPower(power);
+            frontLeft.setPower(-power);
 
             while ((backLeft.isBusy() || backRight.isBusy())&& opmode.opModeIsActive()){
                 ;
@@ -345,15 +300,13 @@ public class BaseDriveObject extends Object {
             stopDriving();
         }
         else{
-            frontLeft.setTargetPosition(-ticks);
-            frontRight.setTargetPosition(ticks);
-            backLeft.setTargetPosition(-ticks);
-            backRight.setTargetPosition(ticks);
+            backLeft.setTargetPosition(ticks);
+            backRight.setTargetPosition(-ticks);
 
-            setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
+            setModeDriving();
             backLeft.setPower(power);
             backRight.setPower(power);
-            frontRight.setPower(power);
+            frontRight.setPower(-power);
             frontLeft.setPower(power);
 
             while ((backLeft.isBusy() || backRight.isBusy())&& opmode.opModeIsActive()){
@@ -363,40 +316,6 @@ public class BaseDriveObject extends Object {
             stopDriving();
 
         }
-    }
-
-    public void WGGOpen () {
-        //wobbleGoalGrabber.setTargetPosition(530);
-        wobbleGoalGrabber.setVelocity(200);
-        while ((wobbleGoalGrabber.getCurrentPosition()<WGG_OPENED) && opmode.opModeIsActive()){
-            opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
-            opmode.telemetry.update();
-        }
-        wobbleGoalGrabber.setPower(0);
-    }
-    public void WGGClose() {
-            //wobbleGoalGrabber.setTargetPosition(0);
-            wobbleGoalGrabber.setVelocity(-200);
-            while ((wobbleGoalGrabber.getCurrentPosition()>WGG_CLOSED) && opmode.opModeIsActive()){
-                opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
-                opmode.telemetry.update();
-        }
-        wobbleGoalGrabber.setPower(0);
-    }
-    public void WGGServoOpen() {
-            WGS.setPosition(WGG_SERVO_OPENED);
-    }
-    public void WGGServoClose() {
-            WGS.setPosition(WGG_SERVO_CLOSED);
-    }
-
-    public void WobbleDeliver(){
-            WGGOpen();
-            WGGServoOpen();
-            opmode.sleep(1000);
-            driveDistance2(0.5,-6,1000);
-            WGGClose();
-            WGGServoClose();
     }
 
     /*public void turn(float angle, boolean CCW, double power) {

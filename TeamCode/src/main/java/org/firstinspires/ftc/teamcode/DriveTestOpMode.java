@@ -19,13 +19,31 @@ public class DriveTestOpMode extends LinearOpMode {
         telemetry.addLine("Hello");
         telemetry.update();
         sleep(2000);
+
+        /*
+        drive.strafeDistance2(0.7, 24, 5000);
+        sleep(2000);
+
+        drive.strafeDistance2(0.7,-24,5000);
+        sleep(2000);
+
         drive.turn(180, true, .5);
         sleep(2000);
         drive.turn(90, false, .5);
         drive.telemetryDcMotor();
         sleep(2000);
+        drive.WGGOpen();
+        sleep(2000);
+        drive.WGGServoOpen();
+        sleep(2000);
+        drive.WGGServoClose();
+        sleep(2000);
+        drive.WGGClose();
+        sleep(2000);*/
+        drive.WobbleDeliver();
         telemetry.addLine("Done");
         telemetry.update();
+
     }
 
 }
