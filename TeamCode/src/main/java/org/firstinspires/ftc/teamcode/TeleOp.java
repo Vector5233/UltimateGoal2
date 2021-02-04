@@ -15,14 +15,15 @@
     @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Red")
     public class TeleOp extends OpMode {
     DcMotor frontRight, frontLeft, backRight, backLeft, intake,
-            sweeper, launcher;
-    DcMotorEx wobbleGoalGrabber;
+            sweeper;
+    DcMotorEx wobbleGoalGrabber, launcher;
 
     Servo WGS, webCamServo;
 
     final double COLLECTPOWER = 1.0;
     final double TICKS_PER_REVOLURION = (383.6 * 2);
     final double LAUNCHER_POWER=0.75;
+    final int LAUNCHER_VELOCITY = 1300;
     final double LAUNCHER_THRESHHOLD=.5;
     final double INTAKE_POWER=1.0;
     final double INTAKE_THRESHOLD=.3;
@@ -30,8 +31,10 @@
     final double WOBBLE_GOAL_GRABBER_POWER = 0.5;
     boolean if_pressedGp1X = false;
     double MAXTICK = 383.6/2;
-    final double WGS_OPEN = .2;
-    final double WGS_CLOSED = .5;
+    final double WGS_OPEN = .45;
+    final double WGS_CLOSED = .8;
+    final int WGG_OUT = -500;
+    final int WGG_IN = 250;
     final double webCamServo_OPEN = .5;  // check function and change name
     final double webCamServo_CLOSED = 0;
 
@@ -62,8 +65,9 @@
         sweeper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         sweeper.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        launcher= hardwareMap.dcMotor.get("launcher");
+        launcher= (DcMotorEx)hardwareMap.dcMotor.get("launcher");
         launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         launcher.setDirection(DcMotorSimple.Direction.FORWARD);
 
         wobbleGoalGrabber = (DcMotorEx) hardwareMap.dcMotor.get("wobbleGoalGrabber");
@@ -115,7 +119,7 @@
 
     private void setLauncher()  {
         if (gamepad2.right_trigger > LAUNCHER_THRESHHOLD) {
-            launcher.setPower(gamepad2.right_trigger * LAUNCHER_POWER);
+            launcher.setVelocity(gamepad2.right_trigger * LAUNCHER_VELOCITY);
         } else {
             launcher.setPower(0);
         }
@@ -123,11 +127,11 @@
 
         private void setWobbleGoalGrabber()  {
             if (gamepad1.left_trigger > LAUNCHER_THRESHHOLD) {
-                wobbleGoalGrabber.setVelocity(200);
+                wobbleGoalGrabber.setVelocity(WGG_IN);
                 //wobbleGoalGrabber.setPower(gamepad1.left_trigger * WOBBLE_GOAL_GRABBER_POWER);
             }
             else if (gamepad1. right_trigger > LAUNCHER_THRESHHOLD) {
-                    wobbleGoalGrabber.setVelocity(-200);
+                    wobbleGoalGrabber.setVelocity(WGG_OUT);
                     //wobbleGoalGrabber.setPower(gamepad1.right_trigger * -WOBBLE_GOAL_GRABBER_POWER);
             }
 
