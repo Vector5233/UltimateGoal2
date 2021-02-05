@@ -55,10 +55,12 @@ public class BaseDriveObject extends Object {
     final double WGG_SERVO_OPENED = 0;
     final double WGG_SERVO_CLOSED = 0.47;
     double MAXSPEED = 0.7;
+    double MAXSPEEDSWEEPER = 0.3;
 
     private ElapsedTime strafeTimeout;
     private ElapsedTime driveTimeout;
     private ElapsedTime turnTimeout;
+    private ElapsedTime sweeperTimeout;
 
     //add tenserflow and other variables if needed    /* power of the dcmoters may change while testing */
     ElapsedTime opModeTime = new ElapsedTime();
@@ -295,6 +297,8 @@ public class BaseDriveObject extends Object {
         stopDriving();
     }
 
+
+
     public void setTurnPowerAll(double power) {
         frontLeft.setPower(power);
         frontRight.setPower(-power);
@@ -365,7 +369,27 @@ public class BaseDriveObject extends Object {
         }
     }
 
-    public void WGGOpen () {
+
+    public void setLauncher(double power) {
+        launcher.setPower(power);
+    }
+
+    public void setsweeper(double power, int time){
+        sweeperTimeout= new ElapsedTime();
+        int SWEEPER_TIMEOUT = time;
+
+        if (power > MAXSPEEDSWEEPER) {
+            power = MAXSPEEDSWEEPER;
+        }
+        sweeper.setPower(power);
+
+        while (sweeper.isBusy() && opmode.opModeIsActive()) {
+            if (sweeperTimeout.milliseconds() > SWEEPER_TIMEOUT)
+                break;
+        }
+
+
+        public void WGGOpen () {
         //wobbleGoalGrabber.setTargetPosition(530);
         wobbleGoalGrabber.setVelocity(200);
         while ((wobbleGoalGrabber.getCurrentPosition()<WGG_OPENED) && opmode.opModeIsActive()){
