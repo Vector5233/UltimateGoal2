@@ -24,6 +24,7 @@
     final double TICKS_PER_REVOLURION = (383.6 * 2);
     final double LAUNCHER_POWER=0.75;
     final int LAUNCHER_VELOCITY = 1300;
+    final int POWERSHOT_VELOCITY = 1150;
     final double LAUNCHER_THRESHHOLD=.5;
     final double INTAKE_POWER=1.0;
     final double INTAKE_THRESHOLD=.3;
@@ -120,6 +121,8 @@
     private void setLauncher()  {
         if (gamepad2.right_trigger > LAUNCHER_THRESHHOLD) {
             launcher.setVelocity(gamepad2.right_trigger * LAUNCHER_VELOCITY);
+        } else if (gamepad2.left_trigger > LAUNCHER_THRESHHOLD) {
+            launcher.setVelocity(gamepad2.right_trigger * POWERSHOT_VELOCITY);
         } else {
             launcher.setPower(0);
         }
@@ -156,18 +159,19 @@
 
 
 
-    void setDriveMotors() {
+        void setDriveMotors() {
             if(gamepad1.right_stick_y - gamepad1.right_stick_x > 1){
-                frontLeft.setPower(1 - gamepad1.left_stick_x/2);
-                backRight.setPower(1 + gamepad1.left_stick_x/2);
+                frontLeft.setPower(1 - gamepad1.left_stick_x); // /2?
+                backRight.setPower(1 + gamepad1.left_stick_x);
             }
             else{
                 frontLeft.setPower((gamepad1.right_stick_y - gamepad1.right_stick_x) - gamepad1.left_stick_x/2);
                 backRight.setPower((gamepad1.right_stick_y - gamepad1.right_stick_x) + gamepad1.left_stick_x/2);
             }
+
             if(gamepad1.right_stick_y + gamepad1.right_stick_x > 1){
-                frontRight.setPower(1 + gamepad1.left_stick_x/2);
-                backLeft.setPower(1 - gamepad1.left_stick_x/2);
+                frontRight.setPower(1 + gamepad1.left_stick_x);
+                backLeft.setPower(1 - gamepad1.left_stick_x);
             }
             else {
                 frontRight.setPower((gamepad1.right_stick_y + gamepad1.right_stick_x) + gamepad1.left_stick_x / 2);
@@ -175,6 +179,7 @@
             }
 
         }
+
         void setwebCamServo(){
             if(gamepad2.x){
                 webCamServo.setPosition(webCamServo_CLOSED);

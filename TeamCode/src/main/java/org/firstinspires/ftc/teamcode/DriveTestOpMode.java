@@ -40,7 +40,7 @@ public class DriveTestOpMode extends LinearOpMode {
         sleep(2000);
         drive.WGGClose();
         sleep(2000);*/
-        drive.WobbleDeliver();
+        drive.wobbleDeliver();
         telemetry.addLine("Done");
         telemetry.update();
 

@@ -57,11 +57,16 @@ public class RingIdentifier {
       return "A";
     }
     else if (updatedRecognitions.size()==1) {
-      return "B";
+      if (updatedRecognitions.get(0).getLabel().equals("Quad")){
+        return "C";
+      }
+      else {
+        return "B";
+      }
 
     }
     else {
-      return "C";
+      return "A";
     }
 
   }

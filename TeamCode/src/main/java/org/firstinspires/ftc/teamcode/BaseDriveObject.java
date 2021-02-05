@@ -52,8 +52,8 @@ public class BaseDriveObject extends Object {
     final double LAUNCH_POWER = 0.7;
     final double WGG_OPENED = 330;
     final double WGG_CLOSED = 0;
-    final double WGG_SERVO_OPENED = 0;
-    final double WGG_SERVO_CLOSED = 0.47;
+    final double WGG_SERVO_OPENED = .45;
+    final double WGG_SERVO_CLOSED = 0.8;
     double MAXSPEED = 0.7;
 
     private ElapsedTime strafeTimeout;
