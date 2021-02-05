@@ -386,10 +386,10 @@ public class BaseDriveObject extends Object {
         while (sweeper.isBusy() && opmode.opModeIsActive()) {
             if (sweeperTimeout.milliseconds() > SWEEPER_TIMEOUT)
                 break;
-        }
+        }}
 
 
-        public void WGGOpen () {
+        public void WGGOpen(){
         //wobbleGoalGrabber.setTargetPosition(530);
         wobbleGoalGrabber.setVelocity(200);
         while ((wobbleGoalGrabber.getCurrentPosition()<WGG_OPENED) && opmode.opModeIsActive()){
