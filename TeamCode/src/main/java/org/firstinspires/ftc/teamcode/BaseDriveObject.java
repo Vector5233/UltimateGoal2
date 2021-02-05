@@ -414,7 +414,7 @@ public class BaseDriveObject extends Object {
             WGS.setPosition(WGG_SERVO_CLOSED);
     }
 
-    public void WobbleDeliver(){
+    public void wobbleDeliver(){
             WGGOpen();
             WGGServoOpen();
             opmode.sleep(1000);
