@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -18,13 +19,13 @@ public class RingIdentifier {
 
   VuforiaLocalizer vuforia;
   TFObjectDetector tfod;
-  OpMode parent;
+  LinearOpMode parent;
 
   public static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
   public static final String LABEL_FIRST_ELEMENT = "Quad";
   public static final String LABEL_SECOND_ELEMENT = "Single";
 
-  public RingIdentifier(OpMode p) {
+  public RingIdentifier(LinearOpMode p) {
     parent=p;
     initializeVuforia();
     initializeTfod();
@@ -50,6 +51,7 @@ public class RingIdentifier {
   }
 
   public String ringDisplacement(){
+    parent.sleep(2000);
     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
     if (updatedRecognitions.size() == 0) {
       return "A";
