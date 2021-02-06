@@ -21,23 +21,28 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
         public void runOpMode(){
             initialize();
             waitForStart();
+
             s = ring.ringDisplacement();
+
+            telemetry.addData("Zone: ", s);
+            telemetry.update();
+
             if (s == "A") {
                 drive.driveDistance2(.5, 72, 10000);
                 drive.turn(180, true,.5);
                 drive.wobbleDeliver();
-                drive.driveDistance2(.5,20,10000);
             }
             else if (s == "B"){
                 drive.driveDistance2(.5, 100, 10000);
                 drive.wobbleDeliver();
-                drive.driveDistance2(.5, -30, 10000);
+                drive.driveDistance2(.5, -22, 10000);
             }
             else {
-                drive.driveDistance2(.5, 136, 10000);
+                drive.driveDistance2(.5, 120, 10000);
                 drive.turn(180, true, .5);
+                drive.strafeDistance2(.5,3,10000);
                 drive.wobbleDeliver();
-                drive.driveDistance2(.5, 60, 10000);
+                drive.driveDistance2(.5, 48, 10000);
             }
         }
 

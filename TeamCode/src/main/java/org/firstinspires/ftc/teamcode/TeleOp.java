@@ -24,7 +24,7 @@
     final double TICKS_PER_REVOLURION = (383.6 * 2);
     final double LAUNCHER_POWER=0.75;
     final int LAUNCHER_VELOCITY = 1300;
-    final int POWERSHOT_VELOCITY = 1150;
+    final int POWERSHOT_VELOCITY = 1200;
     final double LAUNCHER_THRESHHOLD=.5;
     final double INTAKE_POWER=1.0;
     final double INTAKE_THRESHOLD=.3;
@@ -122,7 +122,7 @@
         if (gamepad2.right_trigger > LAUNCHER_THRESHHOLD) {
             launcher.setVelocity(gamepad2.right_trigger * LAUNCHER_VELOCITY);
         } else if (gamepad2.left_trigger > LAUNCHER_THRESHHOLD) {
-            launcher.setVelocity(gamepad2.right_trigger * POWERSHOT_VELOCITY);
+            launcher.setVelocity(gamepad2.left_trigger * POWERSHOT_VELOCITY);
         } else {
             launcher.setPower(0);
         }

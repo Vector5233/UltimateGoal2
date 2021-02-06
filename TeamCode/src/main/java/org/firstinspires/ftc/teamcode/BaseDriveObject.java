@@ -26,7 +26,7 @@ public class BaseDriveObject extends Object {
     final double TICKS_PER_INCH_STRAIGHT = (1.056637001) * (383.6 * 2) / (4 * 3.14159265358979323846264);
     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
     final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT) * 1.15 * (20.0 / 17.0);
-    final double TICKS_PER_DEGREE = (3.14159 / 180) * ROBOT_RADIUS * TICKS_PER_INCH_TURN * 180./250.;
+    final double TICKS_PER_DEGREE = (3.14159 / 180) * ROBOT_RADIUS * TICKS_PER_INCH_TURN * 180. / 250.;
     final double TOLERANCE = 1;  // idk about the tolerance
 /* we are using the same motors with same gear ratio (1:2) parellel to last year
  add the ticks per strafe and ticks per arc if it is needed*/
@@ -89,11 +89,11 @@ public class BaseDriveObject extends Object {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -118,7 +118,6 @@ public class BaseDriveObject extends Object {
         opmode.telemetry.addData("BL", backLeft.getCurrentPosition());
         opmode.telemetry.update();
     }
-
 
 
     public void setModeAll(DcMotor.RunMode mode) {
@@ -149,13 +148,14 @@ public class BaseDriveObject extends Object {
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-        /**
+    /**
      * driveDistance controls linear movement forward/backwards
-     * @param power power provided to motor (value between 0 and 1)
+     *
+     * @param power    power provided to motor (value between 0 and 1)
      * @param distance distance traveled (inches)
-     * @param timeOut time taken before bot stops traveling (ms)
+     * @param timeOut  time taken before bot stops traveling (ms)
      */
-    
+
     public void driveDistance(double power, double distance, int timeOut) {
         driveTimeout = new ElapsedTime();
         int DRIVE_TIMEOUT = timeOut;
@@ -178,8 +178,7 @@ public class BaseDriveObject extends Object {
             frontRight.setPower(power);
             backRight.setPower(power);
             backLeft.setPower(power);
-        }
-        else {
+        } else {
             frontLeft.setPower(-power);
             frontRight.setPower(-power);
             backRight.setPower(power);
@@ -209,7 +208,7 @@ public class BaseDriveObject extends Object {
         setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
         setPowerAll(power);
 
-        while((backRight.isBusy()||backLeft.isBusy())&&opmode.opModeIsActive()) {
+        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
             if (driveTimeout.milliseconds() > timeOut) break;
 
         }
@@ -218,48 +217,49 @@ public class BaseDriveObject extends Object {
 
     }
 
-        /**
-     *  strafeDistance controls linear movement left/right
-     * @param power power provided to motor (value between 0 and 1)
+    /**
+     * strafeDistance controls linear movement left/right
+     *
+     * @param power    power provided to motor (value between 0 and 1)
      * @param distance (approximate) distance traveled (inches)
-     * @param time time taken before bot will stop moving (ms)
+     * @param time     time taken before bot will stop moving (ms)
      */
 
-        public void strafeDistance2(double power, double distance, int time) {
-            strafeTimeout = new ElapsedTime();
-            int STRAFE_TIMEOUT = time;
+    public void strafeDistance2(double power, double distance, int time) {
+        strafeTimeout = new ElapsedTime();
+        int STRAFE_TIMEOUT = time;
 
-            int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
+        int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
 
-            if (power > MAXSPEED) {
-                power = MAXSPEED;
-            }
-
-            setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontLeft.setTargetPosition(ticks);
-            frontRight.setTargetPosition(-ticks);
-            backLeft.setTargetPosition(-ticks);
-            backRight.setTargetPosition(ticks);
-
-            setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
-            if (distance >= 0) {
-                frontLeft.setPower(power);
-                frontRight.setPower(-power);
-                backLeft.setPower(-power);
-                backRight.setPower(power);
-            } else {
-                frontLeft.setPower(-power);
-                frontRight.setPower(power);
-                backLeft.setPower(power);
-                backRight.setPower(-power);
-            }
-            while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
-                if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)
-                    break;
-            }
-
-            stopDriving();
+        if (power > MAXSPEED) {
+            power = MAXSPEED;
         }
+
+        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setTargetPosition(ticks);
+        frontRight.setTargetPosition(-ticks);
+        backLeft.setTargetPosition(-ticks);
+        backRight.setTargetPosition(ticks);
+
+        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
+        if (distance >= 0) {
+            frontLeft.setPower(power);
+            frontRight.setPower(-power);
+            backLeft.setPower(-power);
+            backRight.setPower(power);
+        } else {
+            frontLeft.setPower(-power);
+            frontRight.setPower(power);
+            backLeft.setPower(power);
+            backRight.setPower(-power);
+        }
+        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
+            if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)
+                break;
+        }
+
+        stopDriving();
+    }
 
     public void strafeDistance(double power, double distance, int time) {
         strafeTimeout = new ElapsedTime();
@@ -298,7 +298,6 @@ public class BaseDriveObject extends Object {
     }
 
 
-
     public void setTurnPowerAll(double power) {
         frontLeft.setPower(power);
         frontRight.setPower(-power);
@@ -320,7 +319,7 @@ public class BaseDriveObject extends Object {
         WGGServoClose();
     }
 
-    public void turn(float angle, boolean CCW, double power){
+    public void turn(float angle, boolean CCW, double power) {
 
         int ticks = (int) (angle * TICKS_PER_DEGREE);
 
@@ -330,7 +329,7 @@ public class BaseDriveObject extends Object {
 
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        if (CCW){
+        if (CCW) {
             frontRight.setTargetPosition(-ticks);
             frontLeft.setTargetPosition(ticks);
             backLeft.setTargetPosition(ticks);
@@ -343,12 +342,11 @@ public class BaseDriveObject extends Object {
             frontRight.setPower(power);
             frontLeft.setPower(power);
 
-            while ((backLeft.isBusy() || backRight.isBusy())&& opmode.opModeIsActive()){
+            while ((backLeft.isBusy() || backRight.isBusy()) && opmode.opModeIsActive()) {
                 ;
             }
             stopDriving();
-        }
-        else{
+        } else {
             frontLeft.setTargetPosition(-ticks);
             frontRight.setTargetPosition(ticks);
             backLeft.setTargetPosition(-ticks);
@@ -360,7 +358,7 @@ public class BaseDriveObject extends Object {
             frontRight.setPower(power);
             frontLeft.setPower(power);
 
-            while ((backLeft.isBusy() || backRight.isBusy())&& opmode.opModeIsActive()){
+            while ((backLeft.isBusy() || backRight.isBusy()) && opmode.opModeIsActive()) {
                 ;
             }
 
@@ -374,8 +372,8 @@ public class BaseDriveObject extends Object {
         launcher.setPower(power);
     }
 
-    public void setsweeper(double power, int time){
-        sweeperTimeout= new ElapsedTime();
+    public void setsweeper(double power, int time) {
+        sweeperTimeout = new ElapsedTime();
         int SWEEPER_TIMEOUT = time;
 
         if (power > MAXSPEEDSWEEPER) {
@@ -387,41 +385,42 @@ public class BaseDriveObject extends Object {
             if (sweeperTimeout.milliseconds() > SWEEPER_TIMEOUT)
                 break;
         }
-
-
-        public void WGGOpen () {
-        //wobbleGoalGrabber.setTargetPosition(530);
-        wobbleGoalGrabber.setVelocity(200);
-        while ((wobbleGoalGrabber.getCurrentPosition()<WGG_OPENED) && opmode.opModeIsActive()){
-            opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
-            opmode.telemetry.update();
-        }
-        wobbleGoalGrabber.setPower(0);
     }
-    public void WGGClose() {
-            //wobbleGoalGrabber.setTargetPosition(0);
-            wobbleGoalGrabber.setVelocity(-200);
-            while ((wobbleGoalGrabber.getCurrentPosition()>WGG_CLOSED) && opmode.opModeIsActive()){
+
+
+        public void WGGOpen() {
+            //wobbleGoalGrabber.setTargetPosition(530);
+            wobbleGoalGrabber.setVelocity(200);
+            while ((wobbleGoalGrabber.getCurrentPosition() < WGG_OPENED) && opmode.opModeIsActive()) {
                 opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
                 opmode.telemetry.update();
+            }
+            wobbleGoalGrabber.setPower(0);
         }
-        wobbleGoalGrabber.setPower(0);
-    }
-    public void WGGServoOpen() {
+        public void WGGClose() {
+            //wobbleGoalGrabber.setTargetPosition(0);
+            wobbleGoalGrabber.setVelocity(-200);
+            while ((wobbleGoalGrabber.getCurrentPosition() > WGG_CLOSED) && opmode.opModeIsActive()) {
+                opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
+                opmode.telemetry.update();
+            }
+            wobbleGoalGrabber.setPower(0);
+        }
+        public void WGGServoOpen() {
             WGS.setPosition(WGG_SERVO_OPENED);
-    }
-    public void WGGServoClose() {
+        }
+        public void WGGServoClose() {
             WGS.setPosition(WGG_SERVO_CLOSED);
-    }
+        }
 
-    public void wobbleDeliver(){
+        public void wobbleDeliver() {
             WGGOpen();
             WGGServoOpen();
             opmode.sleep(1000);
-            driveDistance2(0.5,-6,1000);
+            driveDistance2(0.5, -6, 1000);
             WGGClose();
             WGGServoClose();
-    }
+        }
 
     /*public void turn(float angle, boolean CCW, double power) {
         double currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
@@ -467,6 +466,7 @@ public class BaseDriveObject extends Object {
         stopDriving();
     }*/
 }
+
 
 
 

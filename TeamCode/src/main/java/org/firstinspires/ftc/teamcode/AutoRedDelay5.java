@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "AutoRed", group = "red")
-public class AutoRed extends LinearOpMode {
+@Autonomous(name = "AutoRedDelay5", group = "red")
+public class AutoRedDelay5 extends LinearOpMode {
 
     RingIdentifier ring;
     BaseDriveObject drive;
@@ -22,6 +22,7 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
 
         s = ring.ringDisplacement();
+        sleep(5000);
 
         telemetry.addData("Zone: ", s);
         telemetry.update();
