@@ -23,7 +23,7 @@
     final double COLLECTPOWER = 1.0;
     final double TICKS_PER_REVOLURION = (383.6 * 2);
     final double LAUNCHER_POWER=0.75;
-    final int LAUNCHER_VELOCITY = 1300;
+    final int LAUNCHER_VELOCITY = 1275;
     final int POWERSHOT_VELOCITY = 1200;
     final double LAUNCHER_THRESHHOLD=.5;
     final double INTAKE_POWER=1.0;
