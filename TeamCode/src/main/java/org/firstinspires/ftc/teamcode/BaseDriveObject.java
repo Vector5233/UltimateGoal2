@@ -141,11 +141,34 @@ public class BaseDriveObject extends Object {
         backRight.setPower(power);
     }
 
-    public void setModeDriving() {
+    /*public void setModeDriving() {
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+
+
+    public void setTurnPowerAll(double power) {
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        backLeft.setPower(power);
+        backRight.setPower(-power);
+    }
+
+    public void setTurnPower(double power) {
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        backLeft.setPower(power);
+        backRight.setPower(-power);
+    }*/
+
+    public void initialize() {
+        opmode.telemetry.addLine("initialized");
+        opmode.telemetry.update();
+        wobbleGoalGrabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        WGGServoClose();
     }
 
     /**
@@ -156,43 +179,7 @@ public class BaseDriveObject extends Object {
      * @param timeOut  time taken before bot stops traveling (ms)
      */
 
-    public void driveDistance(double power, double distance, int timeOut) {
-        driveTimeout = new ElapsedTime();
-        int DRIVE_TIMEOUT = timeOut;
-        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
 
-        if (power > MAXSPEED) {
-            power = MAXSPEED;
-        }
-
-
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        backRight.setTargetPosition(ticks);
-        backLeft.setTargetPosition(ticks);
-
-        setModeDriving();
-        if (distance >= 0) {
-            frontLeft.setPower(power);
-            frontRight.setPower(power);
-            backRight.setPower(power);
-            backLeft.setPower(power);
-        } else {
-            frontLeft.setPower(-power);
-            frontRight.setPower(-power);
-            backRight.setPower(power);
-            backLeft.setPower(power);
-        }
-        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
-            if (driveTimeout.milliseconds() > DRIVE_TIMEOUT)
-                break;
-        }
-
-        //telemetryDcMotor();
-
-        stopDriving();
-    }
 
     public void driveDistance2(double power, double distance, int timeOut) {
         driveTimeout = new ElapsedTime();
@@ -261,63 +248,7 @@ public class BaseDriveObject extends Object {
         stopDriving();
     }
 
-    public void strafeDistance(double power, double distance, int time) {
-        strafeTimeout = new ElapsedTime();
-        int STRAFE_TIMEOUT = time;
 
-        int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
-
-        if (power > MAXSPEED) {
-            power = MAXSPEED;
-        }
-
-        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        backLeft.setTargetPosition(-ticks);
-        backRight.setTargetPosition(ticks);
-
-        setModeDriving();
-        if (distance >= 0) {
-            frontLeft.setPower(power);
-            frontRight.setPower(-power);
-            backLeft.setPower(power);
-            backRight.setPower(power);
-        } else {
-            frontLeft.setPower(-power);
-            frontRight.setPower(power);
-            backLeft.setPower(power);
-            backRight.setPower(power);
-        }
-        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
-            if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)
-                break;
-        }
-
-        stopDriving();
-    }
-
-
-    public void setTurnPowerAll(double power) {
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
-    }
-
-    public void setTurnPower(double power) {
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
-    }
-
-    public void initialize() {
-        opmode.telemetry.addLine("initialized");
-        opmode.telemetry.update();
-        wobbleGoalGrabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        WGGServoClose();
-    }
 
     public void turn(float angle, boolean CCW, double power) {
 
@@ -367,27 +298,6 @@ public class BaseDriveObject extends Object {
         }
     }
 
-
-    public void setLauncher(double power) {
-        launcher.setPower(power);
-    }
-
-    public void setsweeper(double power, int time) {
-        sweeperTimeout = new ElapsedTime();
-        int SWEEPER_TIMEOUT = time;
-
-        if (power > MAXSPEEDSWEEPER) {
-            power = MAXSPEEDSWEEPER;
-        }
-        sweeper.setPower(power);
-
-        while (sweeper.isBusy() && opmode.opModeIsActive()) {
-            if (sweeperTimeout.milliseconds() > SWEEPER_TIMEOUT)
-                break;
-        }
-    }
-
-
         public void WGGOpen() {
             //wobbleGoalGrabber.setTargetPosition(530);
             wobbleGoalGrabber.setVelocity(200);
@@ -421,6 +331,102 @@ public class BaseDriveObject extends Object {
             WGGClose();
             WGGServoClose();
         }
+
+
+
+            /*public void driveDistance(double power, double distance, int timeOut) {
+        driveTimeout = new ElapsedTime();
+        int DRIVE_TIMEOUT = timeOut;
+        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);
+
+        if (power > MAXSPEED) {
+            power = MAXSPEED;
+        }
+
+
+        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        backRight.setTargetPosition(ticks);
+        backLeft.setTargetPosition(ticks);
+
+        setModeDriving();
+        if (distance >= 0) {
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+            backRight.setPower(power);
+            backLeft.setPower(power);
+        } else {
+            frontLeft.setPower(-power);
+            frontRight.setPower(-power);
+            backRight.setPower(power);
+            backLeft.setPower(power);
+        }
+        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
+            if (driveTimeout.milliseconds() > DRIVE_TIMEOUT)
+                break;
+        }
+
+        //telemetryDcMotor();
+
+        stopDriving();
+    }*/
+
+    /*public void setLauncher(double power) {
+        launcher.setPower(power);
+    }
+
+    public void setsweeper(double power, int time) {
+        sweeperTimeout = new ElapsedTime();
+        int SWEEPER_TIMEOUT = time;
+
+        if (power > MAXSPEEDSWEEPER) {
+            power = MAXSPEEDSWEEPER;
+        }
+        sweeper.setPower(power);
+
+        while (sweeper.isBusy() && opmode.opModeIsActive()) {
+            if (sweeperTimeout.milliseconds() > SWEEPER_TIMEOUT)
+                break;
+        }
+    }*/
+
+         /*public void strafeDistance(double power, double distance, int time) {
+        strafeTimeout = new ElapsedTime();
+        int STRAFE_TIMEOUT = time;
+
+        int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);
+
+        if (power > MAXSPEED) {
+            power = MAXSPEED;
+        }
+
+        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        backLeft.setTargetPosition(-ticks);
+        backRight.setTargetPosition(ticks);
+
+        setModeDriving();
+        if (distance >= 0) {
+            frontLeft.setPower(power);
+            frontRight.setPower(-power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
+        } else {
+            frontLeft.setPower(-power);
+            frontRight.setPower(power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
+        }
+        while ((backRight.isBusy() || backLeft.isBusy()) && opmode.opModeIsActive()) {
+            if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)
+                break;
+        }
+
+        stopDriving();
+    }*/
+
 
     /*public void turn(float angle, boolean CCW, double power) {
         double currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
