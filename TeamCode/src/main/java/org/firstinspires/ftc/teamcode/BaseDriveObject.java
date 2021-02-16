@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -16,9 +17,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 public class BaseDriveObject extends Object {
-    DcMotor frontLeft, frontRight, backLeft, backRight, intake, sweeper, launcher;
-    DcMotorEx wobbleGoalGrabber;
+    DcMotor frontLeft, frontRight, backLeft, backRight, intake, sweeper;
+    DcMotorEx wobbleGoalGrabber, launcher;
     Servo WGS;
+    CRServo intakeServo;
     BNO055IMU imu;
     ElapsedTime elapsedTime;
     LinearOpMode opmode;
@@ -36,7 +38,7 @@ public class BaseDriveObject extends Object {
     final double FLPower = 1;
     final double BLPower = 1;
     final double BRPower = 1;
-
+    final double INTAKE_SERVO_POWER = 1;
     final double COLLECT_POWER = 0.5;
 
     final boolean BLUE = true;
@@ -54,6 +56,7 @@ public class BaseDriveObject extends Object {
     final double WGG_CLOSED = 0;
     final double WGG_SERVO_OPENED = .45;
     final double WGG_SERVO_CLOSED = 0.8;
+    final int WGG_VELOCITY = 1200;
     double MAXSPEED = 0.7;
     double MAXSPEEDSWEEPER = 0.3;
 
@@ -77,8 +80,9 @@ public class BaseDriveObject extends Object {
         backRight = opmode.hardwareMap.dcMotor.get("backRight");
 
         intake = opmode.hardwareMap.dcMotor.get("intake");
+        intakeServo = opmode.hardwareMap.crservo.get("intakeServo");
         sweeper = opmode.hardwareMap.dcMotor.get("sweeper");
-        launcher = opmode.hardwareMap.dcMotor.get("launcher");
+        launcher = (DcMotorEx) opmode.hardwareMap.dcMotor.get("launcher");
         wobbleGoalGrabber = (DcMotorEx) opmode.hardwareMap.dcMotor.get("wobbleGoalGrabber");
         WGS = opmode.hardwareMap.servo.get("WGS");
 
@@ -300,7 +304,7 @@ public class BaseDriveObject extends Object {
 
         public void WGGOpen() {
             //wobbleGoalGrabber.setTargetPosition(530);
-            wobbleGoalGrabber.setVelocity(200);
+            wobbleGoalGrabber.setVelocity(WGG_VELOCITY);
             while ((wobbleGoalGrabber.getCurrentPosition() < WGG_OPENED) && opmode.opModeIsActive()) {
                 opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
                 opmode.telemetry.update();
@@ -309,7 +313,7 @@ public class BaseDriveObject extends Object {
         }
         public void WGGClose() {
             //wobbleGoalGrabber.setTargetPosition(0);
-            wobbleGoalGrabber.setVelocity(-200);
+            wobbleGoalGrabber.setVelocity(WGG_VELOCITY);
             while ((wobbleGoalGrabber.getCurrentPosition() > WGG_CLOSED) && opmode.opModeIsActive()) {
                 opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
                 opmode.telemetry.update();

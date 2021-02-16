@@ -19,6 +19,7 @@
     DcMotorEx wobbleGoalGrabber, launcher;
 
     Servo WGS, webCamServo;
+    CRServo intakeServo;
 
     final double COLLECTPOWER = 1.0;
     final double TICKS_PER_REVOLURION = (383.6 * 2);
@@ -28,14 +29,15 @@
     final double LAUNCHER_THRESHHOLD=.5;
     final double INTAKE_POWER=1.0;
     final double INTAKE_THRESHOLD=.3;
+    final double INTAKE_SERVO_POWER = 1;
 
     final double WOBBLE_GOAL_GRABBER_POWER = 0.5;
     boolean if_pressedGp1X = false;
     double MAXTICK = 383.6/2;
     final double WGS_OPEN = .45;
     final double WGS_CLOSED = .8;
-    final int WGG_OUT = -500;
-    final int WGG_IN = 250;
+    final int WGG_OUT = -1500;
+    final int WGG_IN = 1500;//wobble goal collector speed//
     final double webCamServo_OPEN = .5;  // check function and change name
     final double webCamServo_CLOSED = 0;
 
@@ -62,6 +64,7 @@
         intake = hardwareMap.dcMotor.get("intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake.setDirection(DcMotor.Direction.FORWARD);
+        intakeServo = hardwareMap.crservo.get("intakeServo");
         sweeper= hardwareMap.dcMotor.get("sweeper");
         sweeper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         sweeper.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -101,11 +104,16 @@
     private void setIntakeMotor() {
         if (gamepad2.right_stick_y > INTAKE_THRESHOLD) {
             intake.setPower(INTAKE_POWER);
+            intakeServo.setPower(-INTAKE_SERVO_POWER);
+
         } else if (gamepad2.right_stick_y < -INTAKE_THRESHOLD) {
             intake.setPower(-INTAKE_POWER);
+            intakeServo.setPower(INTAKE_SERVO_POWER);
         } else {
+            intakeServo.setPower(0);
             intake.setPower(0);
         }
+
     }
 
     private void setSweeper()  {
