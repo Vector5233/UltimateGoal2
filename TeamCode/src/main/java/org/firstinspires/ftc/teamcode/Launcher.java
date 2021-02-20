@@ -36,7 +36,7 @@ public class Launcher {
         sweeper.setPower(SWEEPER_POWER);
         intake.setPower(INTAKE_POWER);
         intakeServo.setPower(INTAKE_SERVO_POWER);
-        parent.sleep(5000);
+        parent.sleep(4000);
         launcher.setPower(LAUNCHER_POWER);
         sweeper.setPower(0);
         intake.setPower(0);

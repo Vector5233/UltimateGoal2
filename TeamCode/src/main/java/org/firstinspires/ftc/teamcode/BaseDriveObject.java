@@ -331,7 +331,7 @@ public class BaseDriveObject extends Object {
             WGGOpen();
             WGGServoOpen();
             opmode.sleep(1000);
-            driveDistance2(0.5, -6, 1000);
+            driveDistance2(0.6, -6, 1000);
             WGGClose();
             WGGServoClose();
         }
