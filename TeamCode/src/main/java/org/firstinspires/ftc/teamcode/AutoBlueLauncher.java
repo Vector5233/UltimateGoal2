@@ -63,11 +63,11 @@ public class AutoBlueLauncher extends LinearOpMode {
             drive.driveDistance2(.5, -20, 10000);
         }
         else {
-            drive.driveDistance2(.7, 48, 10000);
+            drive.driveDistance2(.5, 48, 10000);
             drive.turn(180, true, .5);
-            drive.strafeDistance2(.7,3,10000);
+            drive.strafeDistance2(.5,10,10000);
             drive.wobbleDeliver();
-            drive.driveDistance2(.7, 48, 10000);
+            drive.driveDistance2(.5, 60, 10000);
         }
 
     }
