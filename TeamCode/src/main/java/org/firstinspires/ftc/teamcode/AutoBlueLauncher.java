@@ -58,9 +58,9 @@ public class AutoBlueLauncher extends LinearOpMode {
             drive.wobbleDeliver();
         }
         else if (s == "B"){
-            drive.driveDistance2(.5, 36, 10000);
+            drive.driveDistance2(.5, 38, 10000);
             drive.wobbleDeliver();
-            drive.driveDistance2(.5, -21, 10000);
+            drive.driveDistance2(.5, -20, 10000);
         }
         else {
             drive.driveDistance2(.7, 48, 10000);
