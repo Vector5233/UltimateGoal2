@@ -313,7 +313,7 @@ public class BaseDriveObject extends Object {
         }
         public void WGGClose() {
             //wobbleGoalGrabber.setTargetPosition(0);
-            wobbleGoalGrabber.setVelocity(WGG_VELOCITY);
+            wobbleGoalGrabber.setVelocity(-WGG_VELOCITY);
             while ((wobbleGoalGrabber.getCurrentPosition() > WGG_CLOSED) && opmode.opModeIsActive()) {
                 opmode.telemetry.addLine().addData("WGGPosition", wobbleGoalGrabber.getCurrentPosition());
                 opmode.telemetry.update();
