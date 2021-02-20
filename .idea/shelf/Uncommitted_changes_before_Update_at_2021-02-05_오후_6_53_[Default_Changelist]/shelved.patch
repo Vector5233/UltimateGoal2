@@ -1,0 +1,169 @@
+Index: TeamCode/src/main/java/org/firstinspires/ftc/teamcode/BaseDriveObject.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.firstinspires.ftc.teamcode;\r\n\r\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\r\nimport com.qualcomm.robotcore.hardware.DcMotor;\r\nimport com.qualcomm.robotcore.hardware.DcMotorSimple;\r\nimport com.qualcomm.robotcore.hardware.Servo;\r\nimport com.qualcomm.robotcore.util.ElapsedTime;\r\n\r\npublic class BaseDriveObject extends Object {\r\n    DcMotor frontLeft, frontRight, backLeft, backRight, intake, intakeMotor2, wobbleGoalGrabber;\r\n    Servo WGS;\r\n    ElapsedTime elapsedTime;\r\n    LinearOpMode opmode;\r\n    final double ROBOT_RADIUS = 22.5;\r\n    final double TICKS_PER_INCH_STRAIGHT = (383.6 * 2) / (4 * 3.14159265358979323846264);\r\n    final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;\r\n    final double TICKS_PER_INCH_STRAFE = (TICKS_PER_INCH_STRAIGHT) * 1.15 * (20.0 / 17.0);\r\n    final double TICKS_PER_DEGREE = (3.14159 / 180) * ROBOT_RADIUS * TICKS_PER_INCH_TURN;\r\n    final double TOLERANCE = 1;  // idk about the tolerance\r\n/* we are using the same motors with same gear ratio (1:2) parellel to last year\r\n add the ticks per strafe and ticks per arc if it is needed*/\r\n\r\n    final double Tolerance = 3;\r\n    final double FRPower = 1;\r\n    final double FLPower = 1;\r\n    final double BLPower = 1;\r\n    final double BRPower = 1;\r\n\r\n    final double COLLECT_POWER = 0.5;\r\n\r\n    final boolean BLUE = true;\r\n    final boolean RED = false;\r\n    //blue is default\r\n\r\n\r\n    double FRpower = 1;\r\n    double FLpower = 1;\r\n    double BRpower = 1;\r\n    double BLpower = 1;\r\n    final double INTAKE_POWER = 0.7;\r\n    final double LAUNCH_POWER = 0.7;\r\n\r\n    double MAXSPEED = 0.7;\r\n\r\n    private ElapsedTime strafeTimeout;\r\n    private ElapsedTime driveTimeout;\r\n    private ElapsedTime turnTimeout;\r\n\r\n    //add tenserflow and other variables if needed    /* power of the dcmoters may change while testing */\r\n    ElapsedTime opModeTime = new ElapsedTime();\r\n    /* reset time encoder (?) im not sure what his coding does. Remove if it is not needed */\r\n\r\n\r\n    public BaseDriveObject(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR, DcMotor WGG, DcMotor IN, DcMotor IN2, Servo WG, LinearOpMode parent) {\r\n        frontLeft = FL;\r\n        frontRight = FR;\r\n        backRight = BR;\r\n        backLeft = BL;\r\n        wobbleGoalGrabber = WGG;\r\n        intake = IN;\r\n        intakeMotor2 = IN2;\r\n\r\n        WGS = WG;\r\n\r\n        opmode = parent;\r\n    }\r\n\r\n    public void stopDriving() {\r\n        frontLeft.setPower(0.0);\r\n        frontRight.setPower(0.0);\r\n        backLeft.setPower(0.0);\r\n        backRight.setPower(0.0);\r\n    }\r\n\r\n    public void telemetryDcMotor() {\r\n        opmode.telemetry.addData(\"FR\", frontRight.getCurrentPosition());\r\n        opmode.telemetry.addData(\"FB\", frontLeft.getCurrentPosition());\r\n        opmode.telemetry.addData(\"BR\", backRight.getCurrentPosition());\r\n        opmode.telemetry.addData(\"BL\", backLeft.getCurrentPosition());\r\n        opmode.telemetry.update();\r\n    }\r\n\r\n    public BaseDriveObject(LinearOpMode parent) {\r\n        opmode = parent;\r\n\r\n        frontLeft.setDirection(DcMotor.Direction.REVERSE);\r\n        frontRight.setDirection(DcMotor.Direction.FORWARD);\r\n\r\n        backRight.setDirection(DcMotorSimple.Direction.REVERSE);\r\n        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);\r\n\r\n        frontLeft = opmode.hardwareMap.dcMotor.get(\"frontLeft\");\r\n        frontRight = opmode.hardwareMap.dcMotor.get(\"frontRight\");\r\n\r\n        backLeft = opmode.hardwareMap.dcMotor.get(\"backLeft\");\r\n        backRight = opmode.hardwareMap.dcMotor.get(\"backRight\");\r\n\r\n        intake = opmode.hardwareMap.dcMotor.get(\"intake\");\r\n        intakeMotor2 = opmode.hardwareMap.dcMotor.get(\"intakeMotor2\");\r\n\r\n        wobbleGoalGrabber = opmode.hardwareMap.dcMotor.get(\"WobbleGoalGrabber\");\r\n        WGS = opmode.hardwareMap.servo.get(\"WGS\");\r\n    }\r\n\r\n    public void setModeAll(DcMotor.RunMode mode) {\r\n        frontLeft.setMode(mode);\r\n        frontRight.setMode(mode);\r\n        backLeft.setMode(mode);\r\n        backRight.setMode(mode);\r\n    }\r\n\r\n\r\n    public void driveDistance(double power, double distance, int time) {\r\n        driveTimeout = new ElapsedTime();\r\n        int DRIVE_TIMEOUT = time;\r\n        int ticks = (int) (distance * TICKS_PER_INCH_STRAIGHT);\r\n\r\n        if (power > MAXSPEED) {\r\n            power = MAXSPEED;\r\n        }\r\n        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\r\n\r\n        frontLeft.setTargetPosition(ticks);\r\n        frontRight.setTargetPosition(ticks);\r\n        backRight.setTargetPosition(ticks);\r\n        backLeft.setTargetPosition(ticks);\r\n\r\n        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);\r\n\r\n        frontLeft.setPower(power);\r\n        frontRight.setPower(power);\r\n        backRight.setPower(power);\r\n        backLeft.setPower(power);\r\n\r\n        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()) {\r\n            if (driveTimeout.milliseconds() > DRIVE_TIMEOUT)\r\n                break;\r\n        }\r\n\r\n        //telemetryDcMotor();\r\n\r\n        stopDriving();\r\n    }\r\n\r\n    public void strafeDistance(double power, double distance, int time) {\r\n        strafeTimeout = new ElapsedTime();\r\n        int STRAFE_TIMEOUT = time;\r\n\r\n        int ticks = (int) (distance * TICKS_PER_INCH_STRAFE);\r\n\r\n        /*if power > MAXSPEED {\r\n            power = MAXSPEED\r\n        }*/\r\n\r\n        setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);\r\n\r\n        frontLeft.setTargetPosition(ticks);\r\n        frontRight.setTargetPosition(-ticks);\r\n        backLeft.setTargetPosition(-ticks);\r\n        backRight.setTargetPosition(ticks);\r\n\r\n        setModeAll(DcMotor.RunMode.RUN_TO_POSITION);\r\n\r\n        frontLeft.setPower(power);\r\n        frontRight.setPower(power);\r\n        backLeft.setPower(power);\r\n        backRight.setPower(power);\r\n\r\n        while ((frontRight.isBusy() || frontLeft.isBusy()) && opmode.opModeIsActive()) {\r\n            if (strafeTimeout.milliseconds() > STRAFE_TIMEOUT)\r\n                break;\r\n        }\r\n\r\n        stopDriving();\r\n    }\r\n\r\n    public void setTurnPowerAll(double power) {\r\n        frontLeft.setPower(power);\r\n        frontRight.setPower(-power);\r\n        backLeft.setPower(power);\r\n        backRight.setPower(-power);\r\n    }\r\n\r\n    public void setTurnPower(double power) {\r\n        frontLeft.setPower(power);\r\n        frontRight.setPower(-power);\r\n        backLeft.setPower(power);\r\n        backRight.setPower(-power);\r\n    }\r\n\r\n    public void initialize() {\r\n        opmode.telemetry.addLine(\"initialized\");\r\n        opmode.telemetry.update();\r\n    }\r\n\r\n    /* public void turn(float angle, boolean CCW, double power) {\r\n        double currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;\r\n        double targetAngle;\r\n\r\n        if (CCW)\r\n        {\r\n            targetAngle = currentAngle - angle;\r\n\r\n            while (opmode.opModeIsActive() && currentAngle > targetAngle)\r\n            {\r\n                frontRight.setPower(power);\r\n                frontLeft.setPower(-power);\r\n                backRight.setPower(power);\r\n                backLeft.setPower(-power);\r\n\r\n                opmode.telemetry.addData(\"second Angle: \", imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle);\r\n\r\n                opmode.telemetry.update();\r\n\r\n                currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;\r\n            }\r\n        }\r\n        else\r\n        {\r\n            targetAngle = currentAngle + angle;\r\n\r\n            while (opmode.opModeIsActive() && currentAngle < targetAngle)\r\n            {\r\n                frontRight.setPower(-power);\r\n                frontLeft.setPower(power);\r\n                backRight.setPower(-power);\r\n                backLeft.setPower(power);\r\n\r\n                opmode.telemetry.addData(\"second Angle: \", imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle);\r\n\r\n                opmode.telemetry.update();\r\n\r\n                currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;\r\n            }\r\n        }\r\n\r\n        stopDriving();\r\n    }*/\r\n}\r\n\r\n\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- TeamCode/src/main/java/org/firstinspires/ftc/teamcode/BaseDriveObject.java	(revision 0c234cd5d7849cc68fe85344ba2e73bf0f475349)
++++ TeamCode/src/main/java/org/firstinspires/ftc/teamcode/BaseDriveObject.java	(date 1611830389628)
+@@ -1,5 +1,6 @@
+ package org.firstinspires.ftc.teamcode;
+ 
++import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+ import com.qualcomm.robotcore.hardware.DcMotor;
+ import com.qualcomm.robotcore.hardware.DcMotorSimple;
+@@ -8,9 +9,11 @@
+ 
+ public class BaseDriveObject extends Object {
+     DcMotor frontLeft, frontRight, backLeft, backRight, intake, intakeMotor2, wobbleGoalGrabber;
+-    Servo WGS;
++    Servo WGS, cameraServo;
+     ElapsedTime elapsedTime;
+     LinearOpMode opmode;
++    ModernRoboticsI2cGyro gyro;
++
+     final double ROBOT_RADIUS = 22.5;
+     final double TICKS_PER_INCH_STRAIGHT = (383.6 * 2) / (4 * 3.14159265358979323846264);
+     final double TICKS_PER_INCH_TURN = TICKS_PER_INCH_STRAIGHT;
+@@ -32,6 +35,9 @@
+     final boolean RED = false;
+     //blue is default
+ 
++    final double IN = 0;
++    final double cameraIn = 0;
++
+ 
+     double FRpower = 1;
+     double FLpower = 1;
+@@ -44,6 +50,7 @@
+ 
+     private ElapsedTime strafeTimeout;
+     private ElapsedTime driveTimeout;
++
+     private ElapsedTime turnTimeout;
+ 
+     //add tenserflow and other variables if needed    /* power of the dcmoters may change while testing */
+@@ -188,54 +195,80 @@
+         backRight.setPower(-power);
+     }
+ 
++    public void setWGS (double position){
++        WGS.setPosition(position);
++    }
++    public void setcameraServo (double position){
++        cameraServo.setPosition(position);
++    }
++
+     public void initialize() {
++        //wobble goal collector need to fold
++        setWGS(IN);
++        setcameraServo(cameraIn);
++
++
++
+         opmode.telemetry.addLine("initialized");
+         opmode.telemetry.update();
+-    }
+-
+-    /* public void turn(float angle, boolean CCW, double power) {
+-        double currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
+-        double targetAngle;
+-
+-        if (CCW)
+-        {
+-            targetAngle = currentAngle - angle;
+-
+-            while (opmode.opModeIsActive() && currentAngle > targetAngle)
+-            {
+-                frontRight.setPower(power);
+-                frontLeft.setPower(-power);
+-                backRight.setPower(power);
+-                backLeft.setPower(-power);
+-
+-                opmode.telemetry.addData("second Angle: ", imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle);
+-
+-                opmode.telemetry.update();
+ 
+-                currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
+-            }
+-        }
+-        else
+-        {
+-            targetAngle = currentAngle + angle;
++    }
++
++}
++   /* if we are using gyro for the turn use this code.
+ 
+-            while (opmode.opModeIsActive() && currentAngle < targetAngle)
+-            {
+-                frontRight.setPower(-power);
+-                frontLeft.setPower(power);
+-                backRight.setPower(-power);
+-                backLeft.setPower(power);
++    public boolean outsideOfRange(double targetDegrees, double initialDegrees) {
++        final double ERRORTOLERANCE = 10;
++        if (gyro.getIntegratedZValue() > (Math.max(targetDegrees, initialDegrees) + ERRORTOLERANCE)) {
++            return true;
++        } else if (gyro.getIntegratedZValue() < (Math.min(targetDegrees, initialDegrees) - ERRORTOLERANCE)) {
++            return true;
++        } else {
++            return false;
++        }
++    }
+ 
+-                opmode.telemetry.addData("second Angle: ", imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle);
++    public void turnToDegree(double powerLimit, double targetDegrees) {
++        final double FINALTOLERANCE = 2;
++        //this reads the initial theta value for the gyro to be used later
++        final double GYROINITIAL = gyro.getIntegratedZValue();
++        double powerMin = 0.22;
++        double deltaTheta = targetDegrees - gyro.getIntegratedZValue();
+ 
+-                opmode.telemetry.update();
+-
+-                currentAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle;
+-            }
+-        }
+-
+-        stopDriving();
+-    }*/
++        while ((Math.abs(deltaTheta) > FINALTOLERANCE) && opmode.opModeIsActive()) {
++            opmode.idle();
++            double gyroValue = gyro.getIntegratedZValue();
++            opmode.idle();
++            if (!outsideOfRange(targetDegrees, GYROINITIAL)) {
++                opmode.idle();
++                if (deltaTheta >= 90) {
++                    opmode.idle();
++                    setTurnPowerAll(powerLimit);
++                    opmode.idle();
++                    opmode.telemetry.addData("left turn, max power", gyroValue);
++                } else if ((deltaTheta < 90) && (deltaTheta > 0)) {
++                    opmode.idle();
++                    setTurnPowerAll(((1 - powerMin) / 90) * deltaTheta + powerMin);
++                    opmode.idle();
++                    opmode.telemetry.addData("left turn, low power range", gyroValue);
++                } else if ((deltaTheta > -90) && (deltaTheta < 0)) {
++                    opmode.idle();
++                    setTurnPowerAll(((1 - powerMin) / 90) * deltaTheta - powerMin);
++                    opmode.idle();
++                    opmode.telemetry.addData("right turn, low power range", gyroValue);
++                } else {
++                    opmode.idle();
++                    setTurnPowerAll(-powerLimit);
++                    opmode.idle();
++                    opmode.telemetry.addData("right turn, max power", gyroValue);
++                }
++            }
++            opmode.idle();
++            deltaTheta = targetDegrees - gyro.getIntegratedZValue();
++            opmode.idle();
++            opmode.telemetry.update();
++        }
++    }
+ }
+ 
+ 
