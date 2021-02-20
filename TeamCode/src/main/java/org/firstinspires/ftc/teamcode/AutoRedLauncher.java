@@ -41,25 +41,25 @@ public class AutoRedLauncher extends LinearOpMode {
 
     public void driveLauncher() {
         drive.driveDistance2(.5, 34, 10000);
-        drive.turn(-20,false,0.5);
+        drive.turn(20,false,0.5);
     }
     public void angleCorrection() {
-        drive.turn(-20, true, 0.5);
+        drive.turn(20, true, 0.5);
     }
     public void deliverWobbleGoal(String s) {
         if (s == "A") {
             drive.driveDistance2(.5, 14, 10000);
+            drive.strafeDistance2(0.5, 8, 10000 );
             drive.wobbleDeliver();
         }
         else if (s == "B"){
             drive.driveDistance2(.5, 38, 10000);
-            drive.turn(180, true,.5);
             drive.wobbleDeliver();
             drive.driveDistance2(.5, -20, 10000);
         }
         else {
             drive.driveDistance2(.7, 55, 10000);
-            /*drive.strafeDistance2(.7,-10,10000);*/
+            drive.strafeDistance2(0.5, 8, 10000);
             drive.wobbleDeliver();
             drive.driveDistance2(.95, 54, 10000);
         }
