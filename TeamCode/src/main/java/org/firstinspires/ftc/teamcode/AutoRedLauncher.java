@@ -48,20 +48,19 @@ public class AutoRedLauncher extends LinearOpMode {
     }
     public void deliverWobbleGoal(String s) {
         if (s == "A") {
-            drive.driveDistance2(.5, 14, 10000);
             drive.strafeDistance2(0.5, 8, 10000 );
             drive.wobbleDeliver();
         }
         else if (s == "B"){
-            drive.driveDistance2(.5, 38, 10000);
+            drive.driveDistance2(.5, 36,10000);
             drive.wobbleDeliver();
             drive.driveDistance2(.5, -20, 10000);
         }
         else {
-            drive.driveDistance2(.7, 55, 10000);
+            drive.driveDistance2(.7, 60, 10000);
             drive.strafeDistance2(0.5, 8, 10000);
             drive.wobbleDeliver();
-            drive.driveDistance2(.95, 54, 10000);
+            drive.driveDistance2(.95, 64, 10000);
         }
 
     }
