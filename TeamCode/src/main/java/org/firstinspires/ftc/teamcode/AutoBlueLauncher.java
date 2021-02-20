@@ -30,7 +30,7 @@ public class AutoBlueLauncher extends LinearOpMode {
     public void runOpMode(){
         initialize();
         waitForStart();
-        /*drive.driveDistance2(.5, 24, 10000);*/
+        drive.driveDistance2(.5, 24, 10000);
         s = ring.ringDisplacement();
         telemetry.addData("Zone: ", s);
         telemetry.update();
@@ -45,7 +45,7 @@ public class AutoBlueLauncher extends LinearOpMode {
     }
 
     public void driveLauncher() {
-        drive.driveDistance2(.5, 58, 10000);
+        drive.driveDistance2(.5, 34, 10000);
         drive.turn(20,false,0.5);
     }
     public void angleCorrection() {
