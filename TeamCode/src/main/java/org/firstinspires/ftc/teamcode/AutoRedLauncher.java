@@ -54,13 +54,13 @@ public class AutoRedLauncher extends LinearOpMode {
         else if (s == "B"){
             drive.driveDistance2(.5, 36,10000);
             drive.wobbleDeliver();
-            drive.driveDistance2(.5, -20, 10000);
+            drive.driveDistance2(.5, -36, 10000);
         }
         else {
             drive.driveDistance2(.7, 60, 10000);
             drive.strafeDistance2(0.5, 8, 10000);
             drive.wobbleDeliver();
-            drive.driveDistance2(.95, 64, 10000);
+            drive.driveDistance2(.95, -50, 10000);
         }
 
     }
