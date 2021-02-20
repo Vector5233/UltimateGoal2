@@ -33,17 +33,21 @@ public class AutoBlueLauncher extends LinearOpMode {
         // all distances reduced by 24"
         driveLauncher();
         launcher.launch();
+        angleCorrection();
 
         deliverWobbleGoal(s);
     }
 
     public void driveLauncher() {
-        drive.driveDistance2(.5, 72, 10000);
+        drive.driveDistance2(.5, 58, 10000);
+        drive.turn(20,false,0.5);
     }
-
+    public void angleCorrection() {
+        drive.turn(20, true, 0.5);
+    }
     public void deliverWobbleGoal(String s) {
         if (s == "A") {
-            //drive.driveDistance2(.5, 72, 10000);
+            drive.driveDistance2(.5, 14, 10000);
             drive.turn(180, true,.5);
             drive.wobbleDeliver();
         }

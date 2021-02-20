@@ -40,5 +40,7 @@ public class Launcher {
         launcher.setPower(LAUNCHER_POWER);
         sweeper.setPower(0);
         intake.setPower(0);
+        intakeServo.setPower(0);
+        launcher.setPower(0);
     }
 }

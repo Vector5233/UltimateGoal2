@@ -52,7 +52,7 @@ public class BaseDriveObject extends Object {
     double BLpower = 1;
     final double INTAKE_POWER = 0.7;
     final double LAUNCH_POWER = 0.7;
-    final double WGG_OPENED = 330;
+    final double WGG_OPENED = 990;
     final double WGG_CLOSED = 0;
     final double WGG_SERVO_OPENED = .45;
     final double WGG_SERVO_CLOSED = 0.8;
@@ -265,10 +265,10 @@ public class BaseDriveObject extends Object {
         setModeAll(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         if (CCW) {
-            frontRight.setTargetPosition(-ticks);
-            frontLeft.setTargetPosition(ticks);
-            backLeft.setTargetPosition(ticks);
-            backRight.setTargetPosition(-ticks);
+            frontRight.setTargetPosition(ticks);
+            frontLeft.setTargetPosition(-ticks);
+            backLeft.setTargetPosition(-ticks);
+            backRight.setTargetPosition(ticks);
 
             setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -282,10 +282,10 @@ public class BaseDriveObject extends Object {
             }
             stopDriving();
         } else {
-            frontLeft.setTargetPosition(-ticks);
-            frontRight.setTargetPosition(ticks);
-            backLeft.setTargetPosition(-ticks);
-            backRight.setTargetPosition(ticks);
+            frontLeft.setTargetPosition(ticks);
+            frontRight.setTargetPosition(-ticks);
+            backLeft.setTargetPosition(ticks);
+            backRight.setTargetPosition(-ticks);
 
             setModeAll(DcMotor.RunMode.RUN_TO_POSITION);
             backLeft.setPower(power);
