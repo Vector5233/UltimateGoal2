@@ -7,6 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name = "AutoBlueLauncher", group = "blue")
 public class AutoBlueLauncher extends LinearOpMode {
 
+    /*TODO:
+     * Test zone B
+     * Test zone C
+     * modify ring detection so that we drive up to the rings before ID
+     * Reduce times, esp for zone C
+     */
     RingIdentifier ring;
     BaseDriveObject drive;
     String s;
